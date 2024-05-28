@@ -7,6 +7,12 @@ namespace Cinemas.API.Films.Entities;
 
 public class FilmContext : DbContext
 {
+    public FilmContext()
+    {       
+    }
+
+    public FilmContext(DbContextOptions<FilmContext> options) : base(options) { }
+
     public DbSet<FilmEntity> Films { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

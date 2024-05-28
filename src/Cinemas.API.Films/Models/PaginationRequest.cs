@@ -1,3 +1,7 @@
 ﻿namespace Cinemas.API.Films.Models;
 
-public record PaginationRequest(int PageSize = 10, int PageIndex = 0);
+public class PaginationRequest
+{
+    public int PageSize { get; set; } = 10;
+    public int PageIndex { get; set; } = 0;
+}

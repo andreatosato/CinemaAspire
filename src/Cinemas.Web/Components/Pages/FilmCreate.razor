@@ -1,0 +1,33 @@
+﻿@page "/film-create"
+@inject FilmApiClient client
+
+<h3>Film</h3>
+<EditForm Model="Model" OnValidSubmit="Submit" FormName="film-create">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="filmTitle">Film Title</label>
+        <InputText @bind-Value="Model!.FilmTitle" class="form-control" id="filmTitle" aria-describedby="titleHelp" placeholder="Enter film title" />
+        
+        <small id="titleHelp" class="form-text text-muted">Add film to your history</small>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    public class FilmModel
+    {
+        public string FilmTitle { get; set; }
+    }
+
+    [SupplyParameterFromForm]
+    public FilmModel Model { get; set; } = new FilmModel();
+
+    async Task Submit()
+    {
+        Console.WriteLine("FilmTitle");
+        await client.PostFilm(Model.FilmTitle);
+    }
+}
