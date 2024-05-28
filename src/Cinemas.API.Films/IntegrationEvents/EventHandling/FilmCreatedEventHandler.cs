@@ -21,6 +21,9 @@ public class FilmCreatedEventHandler : IIntegrationEventHandler<FilmCreatedEvent
     {
         var film = await db.Films.FindAsync(@event.FilmId);
         var omdbItem = omdb.GetItemByTitle(film!.Name);
+
+        // TODO: Copy image to Azure Storage
+        // TODO: Save Azure Storage Link
         film.PictureUri = omdbItem.Poster;
         await db.SaveChangesAsync();
     }
