@@ -11,7 +11,7 @@ public class FilmContext : DbContext
     {       
     }
 
-    public FilmContext(DbContextOptions options) : base(options) { }
+    public FilmContext(DbContextOptions<FilmContext> options) : base(options) { }
 
     public DbSet<FilmEntity> Films { get; set; }
 

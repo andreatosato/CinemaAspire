@@ -2,7 +2,7 @@
 @inject FilmApiClient client
 <h3>Film</h3>
 
-<EditForm Model="Model" OnValidSubmit="Submit">
+<EditForm Model="Model" OnValidSubmit="Submit" FormName="film-create">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
@@ -22,6 +22,7 @@
         public string FilmTitle { get; set; }
     }
 
+    [SupplyParameterFromForm]
     public FilmModel Model { get; set; } = new FilmModel();
 
     async Task Submit()

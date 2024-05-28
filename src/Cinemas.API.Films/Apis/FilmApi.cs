@@ -3,6 +3,7 @@ using Cinemas.API.Films.IntegrationEvents.Events;
 using Cinemas.API.Films.Models;
 using Cinemas.EventBus.Abstractions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cinemas.API.Films.Apis;
@@ -15,8 +16,8 @@ public static class CatalogApi
         var api = app.MapGroup("api/film");
 
         // Routes for querying catalog items.
-        api.MapGet("/items", GetAllItems);
-        api.MapGet("/items/{id:int}", GetItemById);
+        //api.MapGet("/items", GetAllItems);
+        //api.MapGet("/items/{id:int}", GetItemById);
         
         // Routes for modifying catalog items.
         api.MapPut("/items", UpdateItem);
@@ -27,8 +28,8 @@ public static class CatalogApi
     }
 
     public static async Task<Results<Ok<PaginatedItems<FilmEntity>>, BadRequest<string>>> GetAllItems(
-        [AsParameters] PaginationRequest paginationRequest,
-        [AsParameters] FilmContext db)
+        [FromQuery] PaginationRequest paginationRequest,
+        [FromServices] FilmContext db)
     {
         var pageSize = paginationRequest.PageSize;
         var pageIndex = paginationRequest.PageIndex;
@@ -46,7 +47,7 @@ public static class CatalogApi
     }
 
     public static async Task<Results<Ok<FilmEntity>, NotFound, BadRequest<string>>> GetItemById(
-        [AsParameters] FilmContext db,
+        [FromServices] FilmContext db,
         Guid id)
     {
         if (Guid.Empty == id)
@@ -65,7 +66,7 @@ public static class CatalogApi
     }
 
     public static async Task<Results<Created, NotFound<string>>> UpdateItem(
-        [AsParameters] FilmContext db,
+        [FromServices] FilmContext db,
         FilmEntity filmToUpdate)
     {
         var filmItem = await db.Films.SingleOrDefaultAsync(i => i.Id == filmToUpdate.Id);
@@ -83,9 +84,9 @@ public static class CatalogApi
     }
 
     public static async Task<Created> CreateItem(
-        [AsParameters] FilmContext db,
-        [AsParameters] IEventBus bus,
-        FilmEntity filmEntity)
+        [FromServices] FilmContext db,
+        [FromServices] IEventBus bus,
+        [FromBody] FilmEntity filmEntity)
     {
         db.Films.Add(filmEntity);
         await db.SaveChangesAsync();
@@ -94,7 +95,7 @@ public static class CatalogApi
     }
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
-        [AsParameters] FilmContext db,
+        [FromServices] FilmContext db,
         Guid id)
     {
         var item = db.Films.SingleOrDefault(x => x.Id == id);

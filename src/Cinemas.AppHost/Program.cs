@@ -1,8 +1,4 @@
-using Aspire.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
-
-//var secrets = builder.AddConnectionString("secrets");
 
 // Storage
 var storage = builder.AddAzureStorage("cinemas-aspire-storage")
@@ -11,16 +7,16 @@ var storage = builder.AddAzureStorage("cinemas-aspire-storage")
 
 // DB
 var cache = builder.AddRedis("cinemas-aspire-cache");
-var sqlFilm = builder.AddSqlServer("cinema-aspire-db").AddDatabase("filmsdb");
+//var sqlPassword 
+var sqlFilm = builder.AddSqlServer("cinema-aspire-db")
+    .AddDatabase("filmsdb");
+
 var cosmosActors = builder.AddAzureCosmosDB("cinemas-aspire-cosmos")
     .RunAsEmulator()
     .AddDatabase("actorsdb");
 
 // Bus
 var rabbitMq = builder.AddRabbitMQ("cinemas-aspire-bus");
-    //.WithImage("rabbitmq", "3.13.2-management");
-
-//var rabbitMq = builder.AddRabbitMQ("cinemas-aspire-bus");
 
 // Services
 var apiFilms = builder.AddProject<Projects.Cinemas_API_Films>("filmsApi")

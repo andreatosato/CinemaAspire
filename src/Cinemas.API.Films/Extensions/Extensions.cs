@@ -10,7 +10,7 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.AddSqlServerDbContext<FilmContext>("cinema-aspire-db");
+        builder.AddSqlServerDbContext<FilmContext>("filmsdb");
 
         builder.AddRabbitMqEventBus("eventbus-cinema")
                .AddSubscription<FilmCreatedEvent, FilmCreatedEventHandler>()
