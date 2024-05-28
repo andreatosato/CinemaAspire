@@ -1,7 +1,7 @@
 ﻿using Cinemas.API.Films.Entities;
-using Cinemas.API.Films.IntegrationEvents.Events;
 using Cinemas.API.Films.Models;
 using Cinemas.EventBus.Abstractions;
+using Cinemas.EventBus.Events;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

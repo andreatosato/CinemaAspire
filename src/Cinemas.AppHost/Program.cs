@@ -7,8 +7,12 @@ var storage = builder.AddAzureStorage("cinemas-aspire-storage")
 
 // DB
 var cache = builder.AddRedis("cinemas-aspire-cache");
-//var sqlPassword 
-var sqlFilm = builder.AddSqlServer("cinema-aspire-db")
+
+// Persistent Password
+//var sqlPassword = builder.AddParameter("sql-password", secret: true);
+// https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/external-parameters
+var sqlFilm = builder.AddSqlServer("cinema-aspire-db") //, sqlPassword)
+    //.WithDataVolume()
     .AddDatabase("filmsdb");
 
 var cosmosActors = builder.AddAzureCosmosDB("cinemas-aspire-cosmos")

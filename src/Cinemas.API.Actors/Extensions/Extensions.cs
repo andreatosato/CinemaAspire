@@ -1,23 +1,21 @@
-﻿using Cinemas.API.Films.Entities;
-using Cinemas.API.Films.IntegrationEvents.EventHandling;
+﻿using Cinemas.API.Actors.Infrastructure;
+using Cinemas.API.Actors.IntegrationEvents.EventHandling;
 using Cinemas.EventBus.Events;
-using OMDbApiNet;
 using System.Text.Json.Serialization;
 
-namespace Cinemas.API.Films.Extensions;
-
+namespace Cinemas.API.Actors.Extensions;
 public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.AddSqlServerDbContext<FilmContext>("filmsdb");
+        builder.AddCosmosDbContext<ActorContext>(null, "actorsdb");
 
         builder.AddRabbitMqEventBus("cinemas-aspire-bus")
                .AddSubscription<FilmCreatedEvent, FilmCreatedEventHandler>()
                .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
-       
-        builder.Services.AddScoped<IOmdbClient>(sp => new OmdbClient(builder.Configuration.GetConnectionString("Omdb")));
-        builder.AddAzureBlobClient("films-blob");
+
+        //builder.Services.AddScoped<IOmdbClient>(sp => new OmdbClient(builder.Configuration.GetConnectionString("Omdb")));
+        //builder.AddAzureBlobClient("films-blob");
     }
 }
 
