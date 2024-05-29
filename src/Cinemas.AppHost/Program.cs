@@ -44,8 +44,7 @@ builder.AddProject<Projects.Cinemas_Web>("webfrontend")
     .WithReference(apiFilms)
     .WithReference(apiActors)
     .WithReference(cache)
-    .WithEnvironment("Film__Url", apiFilms.GetEndpoint(launchProfileName))
-    .WithEnvironment("Actor__Url", apiActors.GetEndpoint(launchProfileName));
+    .WithReference(storage);
 
 builder.Build().Run();
 
