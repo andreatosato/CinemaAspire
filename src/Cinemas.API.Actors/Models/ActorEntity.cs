@@ -9,5 +9,5 @@ public class ActorEntity
 
     public string Name { get; }
     public string Picture { get; set; }
-    public List<Guid> FilmIds { get; set; } = new List<Guid>();
+    public List<FilmEntity> FilmIds { get; set; } = new List<FilmEntity>();
 }

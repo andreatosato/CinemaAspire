@@ -9,7 +9,7 @@ namespace Cinemas.API.Actors.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<ActorEntity> builder)
         {
             builder.HasKey(t => t.Name);
-
+            builder.OwnsMany(t => t.FilmIds);
         }
     }
 }

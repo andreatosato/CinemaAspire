@@ -1,12 +1,7 @@
 ﻿using Cinemas.EventBus.Abstractions;
 using Cinemas.EventBus.Events;
-using Google.Protobuf.WellKnownTypes;
 using GoogleApi;
 using GoogleApi.Entities.Search.Image.Request;
-using GoogleApi.Entities.Search.Common;
-using GoogleApi.Entities.Search.Common.Enums;
-using GoogleApi.Interfaces.Places;
-using GoogleApi.Interfaces.Search;
 using Cinemas.API.Actors.Infrastructure;
 
 namespace Cinemas.API.Actors.IntegrationEvents.EventHandling;
@@ -29,7 +24,7 @@ public class ActorLoadedEventHandler : IIntegrationEventHandler<ActorLoadedEvent
             {
                 actorEntity = new Models.ActorEntity(actor)
                 {
-                    FilmIds = new(){ @event.FilmId }
+                    FilmIds = new() { new Models.FilmEntity() { FilmId = @event.FilmId } }
                 };
                 db.Actors.Add(actorEntity);
             }
