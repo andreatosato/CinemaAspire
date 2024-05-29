@@ -1,0 +1,66 @@
+﻿@page "/history"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject ActorApiClient ActorApi
+@inject FilmApiClient FilmApi
+
+<PageTitle>Film History</PageTitle>
+
+@if (films == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cover</th>
+                <th>Actors</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var film in films)
+            {
+                <tr>
+                    <td>@film.Name</td>
+                    <td><img src="@film.PictureUri"/></td>
+                    <td>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Cover</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var actor in film.Actors)
+                                {
+                                    <tr>
+                                        <td>@actor.Name</td>
+                                        <td><img src="@actor.Picture" width="150px" /></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<FilmEntity>? films;
+
+    protected override async Task OnInitializedAsync()
+    {
+        films = await FilmApi.GetFilms();
+        foreach(var f in films)
+        {
+            f.Actors = await ActorApi.GetActorByFilm(f.Id);
+        }
+    }
+}

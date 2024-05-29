@@ -16,6 +16,11 @@ builder.Services.AddHttpClient<FilmApiClient>(client =>
         client.BaseAddress = new("https+http://filmsApi");
     });
 
+builder.Services.AddHttpClient<ActorApiClient>(client =>
+{
+    client.BaseAddress = new("https+http://actorsApi");
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

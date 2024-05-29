@@ -7,11 +7,16 @@ public class FilmApiClient(HttpClient httpClient)
 {
     public async Task PostFilm(string filmTitle, CancellationToken cancellationToken = default)
     {
-        var entity = new FilmEntity() { Name = filmTitle };
-        await httpClient.PostAsJsonAsync<FilmEntity>("/api/film/items", entity, JsonSerializerOptions.Default);
+        var entity = new FilmRequestEntity() { Name = filmTitle };
+        await httpClient.PostAsJsonAsync<FilmRequestEntity>("/api/film/items", entity, JsonSerializerOptions.Default);
     }
 
-    public class FilmEntity
+    public async Task<List<FilmEntity>> GetFilms(CancellationToken cancellationToken = default)
+    {
+        return await httpClient.GetFromJsonAsync<List<FilmEntity>>("/api/film/items", cancellationToken);
+    }
+
+    public class FilmRequestEntity
     {
         public required string Name { get; set; }
     }

@@ -38,7 +38,7 @@ public class FilmCreatedEventHandler : IIntegrationEventHandler<FilmCreatedEvent
     {
         Uri uploadFileUri;
         var fileNameUri = new Uri(posterUrl);
-        var fileName = fileNameUri.Query;
+        var fileName = fileNameUri.Segments.Last();
         using (var httpClient = new HttpClient())
         {
             var imageStream = await httpClient.GetStreamAsync(posterUrl);

@@ -16,7 +16,7 @@ public static class ActorApi
         return app;
     }
 
-    public static async Task<Results<Ok<List<ActorEntity>>, NotFound, BadRequest<string>>> GetItemById(
+    public static async Task<Results<Ok<ActorEntity[]>, NotFound, BadRequest<string>>> GetItemById(
         [FromServices] ActorContext db,
         Guid id)
     {
@@ -25,14 +25,15 @@ public static class ActorApi
             return TypedResults.BadRequest("Id is not valid.");
         }
 
-        var item = await db.Actors.Where(ci => ci.FilmIds.Any(t => t.FilmId == id)).ToListAsync();
+        var item = await db.Actors.ToListAsync();
+        var actors = item.Where(t => t.FilmIds.Any(c => c.FilmId == id));
 
-        if (item == null)
+        if (actors == null)
         {
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(item);
+        return TypedResults.Ok(actors.ToArray());
     }
 
 }
