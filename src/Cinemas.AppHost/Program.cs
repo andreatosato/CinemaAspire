@@ -1,18 +1,18 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Storage
-var storage = builder.AddAzureStorage("cinemas-aspire-storage")
+var storage = builder.AddAzureStorage("cinemasaspirestorage")
     .RunAsEmulator()
     .AddBlobs("films-blob");
 
 // DB
-var cache = builder.AddRedis("cinemas-aspire-cache");
+var cache = builder.AddRedis("cinemas-aspire-cache").PublishAsAzureRedis();
 
 // Persistent Password
 //var sqlPassword = builder.AddParameter("sql-password", secret: true);
 // https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/external-parameters
 var sqlFilm = builder.AddSqlServer("cinema-aspire-db") //, sqlPassword)
-    //.WithDataVolume()
+    .PublishAsAzureSqlDatabase()
     .AddDatabase("filmsdb");
 
 var cosmosActors = builder.AddAzureCosmosDB("cinemas-aspire-cosmos")
@@ -23,14 +23,14 @@ var cosmosActors = builder.AddAzureCosmosDB("cinemas-aspire-cosmos")
 var rabbitMq = builder.AddRabbitMQ("cinemas-aspire-bus");
 
 // Services
-var apiFilms = builder.AddProject<Projects.Cinemas_API_Films>("filmsApi")
+var apiFilms = builder.AddProject<Projects.Cinemas_API_Films>("films-api")
     .WithReference(sqlFilm)
     .WithReference(cache)
     .WithReference(storage)
     .WithReference(rabbitMq);
 //.WithReference(secrets);
 
-var apiActors = builder.AddProject<Projects.Cinemas_API_Actors>("actorsApi")
+var apiActors = builder.AddProject<Projects.Cinemas_API_Actors>("actors-api")
     .WithReference(cosmosActors)
     .WithReference(cache)
     .WithReference(rabbitMq);

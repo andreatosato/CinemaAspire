@@ -13,12 +13,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpClient<FilmApiClient>(client =>
     {
-        client.BaseAddress = new("https+http://filmsApi");
+        client.BaseAddress = new("https+http://films-api");
     });
 
 builder.Services.AddHttpClient<ActorApiClient>(client =>
 {
-    client.BaseAddress = new("https+http://actorsApi");
+    client.BaseAddress = new("https+http://actors-api");
 });
 
 var app = builder.Build();
