@@ -1,3 +1,4 @@
+using Cinemas.API.Actors.Apis;
 using Cinemas.API.Actors.Extensions;
 using Cinemas.API.Actors.Infrastructure;
 
@@ -12,7 +13,7 @@ var app = builder.Build();
 
 app.UseCors(b => b.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 app.MapDefaultEndpoints();
-//app.MapFilmApi();
+app.MapActorApi();
 
 await Task.Delay(TimeSpan.FromSeconds(15));
 if (app.Environment.IsDevelopment())
