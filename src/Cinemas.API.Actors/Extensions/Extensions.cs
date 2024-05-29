@@ -1,6 +1,7 @@
 ﻿using Cinemas.API.Actors.Infrastructure;
 using Cinemas.API.Actors.IntegrationEvents.EventHandling;
 using Cinemas.EventBus.Events;
+using GoogleApi.Extensions;
 using System.Text.Json.Serialization;
 
 namespace Cinemas.API.Actors.Extensions;
@@ -11,11 +12,10 @@ public static class Extensions
         builder.AddCosmosDbContext<ActorContext>(null, "actorsdb");
 
         builder.AddRabbitMqEventBus("cinemas-aspire-bus")
-               .AddSubscription<FilmCreatedEvent, FilmCreatedEventHandler>()
+               .AddSubscription<ActorLoadedEvent, ActorLoadedEventHandler>()
                .ConfigureJsonOptions(options => options.TypeInfoResolverChain.Add(IntegrationEventContext.Default));
 
-        //builder.Services.AddScoped<IOmdbClient>(sp => new OmdbClient(builder.Configuration.GetConnectionString("Omdb")));
-        //builder.AddAzureBlobClient("films-blob");
+        builder.Services.AddGoogleApiClients();
     }
 }
 

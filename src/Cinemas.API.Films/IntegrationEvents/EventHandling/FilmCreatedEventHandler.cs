@@ -11,18 +11,23 @@ public class FilmCreatedEventHandler : IIntegrationEventHandler<FilmCreatedEvent
     private readonly FilmContext db;
     private readonly IOmdbClient omdb;
     private readonly BlobServiceClient blobClient;
+    private readonly IEventBus bus;
 
-    public FilmCreatedEventHandler(FilmContext db, IOmdbClient omdb, BlobServiceClient blobClient)
+    public FilmCreatedEventHandler(FilmContext db, IOmdbClient omdb, BlobServiceClient blobClient, IEventBus bus)
     {
         this.db = db;
         this.omdb = omdb;
         this.blobClient = blobClient;
+        this.bus = bus;
     }
 
     public async Task Handle(FilmCreatedEvent @event)
     {
         var film = await db.Films.FindAsync(@event.FilmId);
         var omdbItem = omdb.GetItemByTitle(film!.Name);
+
+        var actors = omdbItem.Actors.Replace(" ", "").Split(",").ToList();
+        await bus.PublishAsync(new ActorLoadedEvent(film.Id, actors));
 
         var imageUri = await DownloadImageAsync(omdbItem.Poster);
         film.PictureUri = imageUri.ToString();
