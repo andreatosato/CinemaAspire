@@ -26,7 +26,7 @@ public class FilmCreatedEventHandler : IIntegrationEventHandler<FilmCreatedEvent
         var film = await db.Films.FindAsync(@event.FilmId);
         var omdbItem = omdb.GetItemByTitle(film!.Name);
 
-        var actors = omdbItem.Actors.Replace(" ", "").Split(",").ToList();
+        var actors = omdbItem.Actors.Trim().Split(",").ToList();
         await bus.PublishAsync(new ActorLoadedEvent(film.Id, actors));
 
         var imageUri = await DownloadImageAsync(omdbItem.Poster);

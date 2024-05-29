@@ -7,30 +7,53 @@ using GoogleApi.Entities.Search.Common;
 using GoogleApi.Entities.Search.Common.Enums;
 using GoogleApi.Interfaces.Places;
 using GoogleApi.Interfaces.Search;
+using Cinemas.API.Actors.Infrastructure;
 
 namespace Cinemas.API.Actors.IntegrationEvents.EventHandling;
 
 public class ActorLoadedEventHandler : IIntegrationEventHandler<ActorLoadedEvent>
 {
-    private readonly IImageSearchApi googleApi;
+    private readonly ActorContext db;
 
-    public ActorLoadedEventHandler(IImageSearchApi googleApi)
+    public ActorLoadedEventHandler(ActorContext db)
     {
-        this.googleApi = googleApi;
+        this.db = db;
     }
+
     public async Task Handle(ActorLoadedEvent @event)
     {
         foreach (var actor in @event.Actors)
         {
-            var response = await googleApi.QueryAsync(new ImageSearchRequest
+            var actorEntity = await db.Actors.FindAsync(actor);
+            if (actorEntity == null)
             {
-                ImageOptions = new SearchImageOptions
+                actorEntity = new Models.ActorEntity(actor)
                 {
-                    ImageType = ImageType.Photo
-                },
-                Query = actor
-            });
+                    FilmIds = new(){ @event.FilmId }
+                };
+                db.Actors.Add(actorEntity);
+            }
+            try
+            {
+                var response = await GoogleSearch.ImageSearch.QueryAsync(new ImageSearchRequest
+                {
+                    Key = "AIzaSyBZ24-mhL7GA_kfKGIcIxBscpzh5hsaOBY",
+                    SearchEngineId = "760a83375a7614d8b",
+                    Query = actor
+                });
 
+                var actorImageResponse = response.Items.Where(t => t.MimeType == "image/jpeg").FirstOrDefault();
+                if (actorImageResponse != null)
+                {
+                    actorEntity.Picture = actorImageResponse.FormattedUrl;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            await db.SaveChangesAsync();
         }        
         Console.WriteLine(@event.Id);
     }
