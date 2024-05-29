@@ -1,4 +1,5 @@
 using Cinemas.API.Actors.Extensions;
+using Cinemas.API.Actors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,8 @@ app.UseCors(b => b.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 app.MapDefaultEndpoints();
 //app.MapFilmApi();
 
-//if (app.Environment.IsDevelopment())
-//    app.Services.CreateScope().ServiceProvider.GetService<FilmContext>()!.Database.EnsureCreated();
+await Task.Delay(TimeSpan.FromSeconds(15));
+if (app.Environment.IsDevelopment())
+    app.Services.CreateScope().ServiceProvider.GetService<ActorContext>()!.Database.EnsureCreated();
 
 app.Run();

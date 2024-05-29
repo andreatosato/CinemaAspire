@@ -10,7 +10,7 @@ public static class Extensions
 {
     public static void AddApplicationServices(this IHostApplicationBuilder builder)
     {
-        builder.AddCosmosDbContext<ActorContext>(builder.Configuration.GetConnectionString("actorsdb")!, "actorsdb");
+        builder.AddCosmosDbContext<ActorContext>("cinemas-aspire-cosmos", "actorsdb");
 
         builder.AddRabbitMqEventBus("cinemas-aspire-bus")
                .AddSubscription<ActorLoadedEvent, ActorLoadedEventHandler>()

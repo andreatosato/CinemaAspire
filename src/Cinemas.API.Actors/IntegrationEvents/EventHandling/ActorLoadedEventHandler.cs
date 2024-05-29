@@ -28,25 +28,18 @@ public class ActorLoadedEventHandler : IIntegrationEventHandler<ActorLoadedEvent
                 };
                 db.Actors.Add(actorEntity);
             }
-            try
-            {
-                var response = await GoogleSearch.ImageSearch.QueryAsync(new ImageSearchRequest
-                {
-                    Key = "AIzaSyBZ24-mhL7GA_kfKGIcIxBscpzh5hsaOBY",
-                    SearchEngineId = "760a83375a7614d8b",
-                    Query = actor
-                });
 
-                var actorImageResponse = response.Items.Where(t => t.MimeType == "image/jpeg").FirstOrDefault();
-                if (actorImageResponse != null)
-                {
-                    actorEntity.Picture = actorImageResponse.FormattedUrl;
-                }
-            }
-            catch (Exception ex)
+            var response = await GoogleSearch.ImageSearch.QueryAsync(new ImageSearchRequest
             {
+                Key = "AIzaSyBZ24-mhL7GA_kfKGIcIxBscpzh5hsaOBY",
+                SearchEngineId = "760a83375a7614d8b",
+                Query = actor
+            });
 
-                throw ex;
+            var actorImageResponse = response.Items.Where(t => t.MimeType == "image/jpeg").FirstOrDefault();
+            if (actorImageResponse != null)
+            {
+                actorEntity.Picture = actorImageResponse.Link;
             }
             await db.SaveChangesAsync();
         }        
